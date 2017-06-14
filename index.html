@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>WebGL Globe</title>
+		<link rel="stylesheet" type="text/css" href="css/app.css">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	</head>
+	<body>
+		<div id="globe-container">
+			
+		</div>
+
+		<!-- Libs -->
+		<script type="text/javascript" src="lib/three-r71/three.js"></script>
+		<script type="text/javascript" src="lib/three-r71/extras/controls/OrbitControls.js"></script>
+
+		<!-- App -->
+		<!-- dev build -->
+		<script type="text/javascript" src="js/globe.js"></script>
+
+		<script type="text/javascript">
+		(function(){
+			//pseudo host
+			var track = 'EyeOnTheReef';
+			var track = null;
+			var chapter = null;
+
+			//apply url parameters
+			var qTrack = getParameterByName('t');
+			var qC = getParameterByName('c');
+			if(qTrack !== null) track = qTrack;
+			if(qC !== null) chapter = qC;
+
+			var globeContainer = document.querySelector('#globe-container');
+			var globe = new Globe(globeContainer);
+
+			if(!globe.initialized){
+				alert('WebGL is required');
+				return;
+			}
+
+			if(track !== null){
+				globe.setTrack(track, {
+					onChapterComplete: function(i){
+						console.log('chapter complete!', i);
+					}
+				});
+
+				if(chapter !== null){
+					globe.setChapter(chapter);
+				}
+			}else{
+				globe.setTrack('Maritime', {});
+				globe.setChapter(0);
+			}
+		})();
+
+		//utils
+		function getParameterByName(name) {
+			name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+			var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+			var results = regex.exec(location.search);
+			return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
+		}
+		</script>
+	</body>
+</html>
